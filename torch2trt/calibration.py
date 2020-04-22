@@ -1,6 +1,10 @@
 import torch
 import tensorrt as trt
 
+import os
+import cv2
+import numpy as np
+
 
 if trt.__version__ >= '5.1':
     DEFAULT_CALIBRATION_ALGORITHM = trt.CalibrationAlgoType.ENTROPY_CALIBRATION_2
@@ -20,6 +24,21 @@ class TensorBatchDataset():
         return [t[idx] for t in self.tensors]
     
     
+class FolderDataset():
+    
+    def __init__(self, folder_path):
+        self.root = folder_path
+        self.dataset = os.listdir(self.root)
+        np.random.shuffle(self.dataset)
+    
+    def __len__(self):
+        return len(self.dataset)
+    
+    def __getitem__(self, idx):
+        img = cv2.imread(os.path.join(self.root,self.dataset[idx]))
+        return torch.from_numpy(np.ascontiguousarray(np.transpose(img,(2,0,1)), dtype=np.float32))
+    
+
 class DatasetCalibrator(trt.IInt8Calibrator):
     
     def __init__(self, inputs, dataset, batch_size=1, algorithm=DEFAULT_CALIBRATION_ALGORITHM):

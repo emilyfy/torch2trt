@@ -49,6 +49,8 @@ from .softmax import *
 from .split import *
 from .chunk import *
 from .unary import *
+from .tensor import *
+from .matmul import *
 
 
 try:

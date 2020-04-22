@@ -34,6 +34,19 @@ def torch_dtype_from_trt(dtype):
         raise TypeError('%s is not supported by torch' % dtype)
 
 
+def torch_dtype_to_np(dtype):
+    if dtype == torch.int8:
+        return np.int8
+    elif dtype == torch.int32:
+        return np.int32
+    elif dtype == torch.float16:
+        return np.float16
+    elif dtype == torch.float32:
+        return np.float32
+    else:
+        raise TypeError('%s is not supported by numpy' % dtype)
+
+
 def torch_device_to_trt(device):
     if device.type == torch.device('cuda').type:
         return trt.TensorLocation.DEVICE
